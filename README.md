@@ -312,11 +312,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For issues, questions, or suggestions:
-- Open an [Issue](https://github.com/YOUR_USERNAME/SmartPDF-Search/issues)
-- Email: your.email@example.com
+- Open an [Issue](https://github.com/Pavan-244/SmartPDF-Search/issues)
+- Email: pavankumar9014663184@gmail.com
 
 ---
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by [Pavan Kumar]**
 
 *Star ⭐ this repo if you find it helpful!*
