@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LlamaDoc AI - Smart PDF Search</title>
+    <link rel="icon" href="/favicon.ico" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/style.css" />
+    <!-- Syntax highlighting for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+        <!-- History Sidebar -->
+        <aside id="history-sidebar" class="history-sidebar collapsed">
+            <div class="history-header">
+                <h3>📚 Chat History</h3>
+                <button class="history-toggle-btn" onclick="toggleHistorySidebar()" title="Toggle history">
+                    ◀
+                </button>
+            </div>
+            <div id="history-pane" class="history-pane">
+                <div id="history-list" class="history-list">
+                    <div class="history-empty">Upload a PDF and start chatting!</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Header Section -->
+            <header>
+                <h1>🦙 LlamaDoc AI</h1>
+                <p class="subtitle">Upload, Ask, and Extract Knowledge from your PDFs</p>
+            </header>
+
+            <!-- Voice Notification -->
+            <div id="voice-notification" class="voice-notification" style="display: none;"></div>
+
+            <!-- Upload Section -->
+            <section class="upload-section card">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <label for="file" class="file-label">
+                        <span class="file-icon">📄</span>
+                        <span class="file-text">Choose a PDF File</span>
+                    </label>
+                    <input type="file" id="file" name="file" accept=".pdf" required />
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-text">Upload PDF</span>
+                        <span class="btn-loader hidden">⏳</span>
+                    </button>
+                </form>
+                <p id="upload-status" class="status-message"></p>
+            </section>
+
+            <!-- Query Section -->
+            <section id="query-section" class="hidden card">
+                <h2 class="section-title">💭 Ask Your Question</h2>
+                
+                <!-- Voice Controls Panel -->
+                <div class="voice-controls-panel">
+                    <div class="voice-row">
+                        <button id="mic-btn" class="mic-btn" onclick="toggleMicrophone()" title="Voice input">
+                            🎤
+                        </button>
+                        <div id="waveform" class="waveform"></div>
+                        <button id="mute-btn" class="mute-btn" title="Mute/Unmute audio">
+                            🔇 Mute
+                        </button>
+                    </div>
+                    
+                    <!-- Voice Settings -->
+                    <details class="voice-settings">
+                        <summary>🎚️ Voice Settings</summary>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <label for="voice-type">Voice Type:</label>
+                                <select id="voice-type">
+                                    <option value="default">Default</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="voice-speed">Speed: <span id="speed-value">180</span> wpm</label>
+                                <input type="range" id="voice-speed" min="100" max="250" value="180" step="10">
+                            </div>
+                            <div class="setting-item">
+                                <label for="voice-volume">Volume: <span id="volume-value">1.0</span></label>
+                                <input type="range" id="voice-volume" min="0" max="1" value="1.0" step="0.1">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                
+                <form id="query-form">
+                    <input 
+                        type="text" 
+                        id="question" 
+                        name="question" 
+                        placeholder="Ask a question about your PDF or use voice..." 
+                        required 
+                    />
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-text">Ask</span>
+                        <span class="btn-loader hidden">⏳</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Answer Section -->
+            <section id="answer-section" class="hidden card answer-card">
+                <h2 class="section-title">💬 Answer</h2>
+                <div id="answer-summary" class="answer-content"></div>
+                <div id="answer-details" class="answer-details"></div>
+                
+                <!-- Download Options -->
+                <div class="download-controls">
+                    <label for="download-format">📥 Download as:</label>
+                    <select id="download-format">
+                        <option value="txt">TXT</option>
+                        <option value="pdf">PDF</option>
+                        <option value="docx">DOCX</option>
+                    </select>
+                    <button id="download-btn" class="btn-secondary">
+                        ⬇️ Download
+                    </button>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer>
+                <p>Built with ❤️ using FastAPI, LangChain & TinyLlama</p>
+                <div class="footer-links">
+                    <a href="https://github.com" target="_blank" rel="noopener" title="GitHub">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Highlight.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="/static/scripts.js"></script>
+    <script src="/static/voice_enhanced.js"></script>
+    <script src="/static/history.js"></script>
+</body>
+</html>
